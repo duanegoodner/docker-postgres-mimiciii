@@ -2,30 +2,28 @@ version: '3.8'
 
 services:
   mimiciii_db:
-    image: ${IMAGE_NAME}
-    restart: always
+    image: duanegoodner/postgres_mimiciii
+    # restart: always
     build:
       context: ../
       dockerfile: ./docker/Dockerfile
       args:
-        - PRIMARY_USER=${USER}
-        - LOCAL_MIMICIII_BUILD_TOOLS=${LOCAL_MIMICIII_BUILD_TOOLS}
-        - POSTGRES_ENTRYPOINT=${POSTGRES_ENTRYPOINT}
+        - PRIMARY_USER=duane
+        - LOCAL_MIMICIII_BUILD_TOOLS=./mimic-code-fork/mimic-iii/buildmimic
+        - POSTGRES_ENTRYPOINT=/docker-entrypoint-initdb.d
     environment:
-      # - MIMIC_USERNAME=${MIMIC_USERNAME}
-      - MIMIC_PASSWORD=${MIMIC_PASSWORD}
-      - BUILD_MIMIC=${BUILD_MIMIC}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - PGDATA=${PGDATA}
-      # - LOCAL_DB_OWNER=${USER}
-    container_name: ${CONTAINER_NAME}
+      - MIMIC_PASSWORD=mimic
+      - BUILD_MIMIC=0
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data
+    container_name: postgres_mimiciii
     volumes:
-      - ${LOCAL_INPUT_CSV}:${CONTAINER_INPUT_CSV}
-      - ${LOCAL_SQL_DIR}:${CONTAINER_SQL_DIR}
-      - ${LOCAL_OUTPUT_CSV}:${CONTAINER_OUTPUT_CSV}
-      - ${LOCAL_DB}:${PGDATA}
+      - ${LOCAL_CSV_FOR_DB_BUILD}:/mimic_data
+      - ${LOCAL_SQL_DIR}:/mimiciii_queries
+      - ${LOCAL_OUTPUT_CSV}:/mimiciii_query_results
+      - ${LOCAL_DB}:/var/lib/postgresql/data
     ports:
-      - ${PG_HOST_PORT}:5432
+      - 5555:5432
     init: true
     stdin_open: true
     tty: true
@@ -33,10 +31,10 @@ services:
   # Use this service to ensure local user has access to mapped db
   # See https://stackoverflow.com/a/75099809 for details
   postgres_permissions:
-    image: ${IMAGE_NAME}
+    image: duanegoodner/postgres_mimiciii
     user: root
     volumes:
-      - ${LOCAL_DB}:${PGDATA}
+      - ${LOCAL_DB}:/var/lib/postgresql/data
     entrypoint:
       [
         "/bin/bash",
