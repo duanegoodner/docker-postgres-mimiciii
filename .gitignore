@@ -4,7 +4,7 @@
 data/mimiciii_postgres/*
 !data/mimiciii_postgres/.gitkeep
 
-data/mimiciii_raw/*
-!data/mimiciii_raw/.gitkeep
+data/mimiciii_raw/csv/*
+data/mimiciii_raw/gz/*
 !data/mimiciii_raw/csv/.gitkeep
 !data/mimiciii_raw/gz/.gitkeep
