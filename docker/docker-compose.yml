@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  mimiciii_db:
+  postgres_mimiciii:
     image: duanegoodner/postgres_mimiciii
     build:
       context: ../
@@ -18,26 +18,28 @@ services:
     container_name: postgres_mimiciii
     volumes:
       - ${LOCAL_CSV_FOR_DB_BUILD}:/mimic_data
-      - ${LOCAL_SQL_DIR}:/mimiciii_queries
-      - ${LOCAL_OUTPUT_CSV}:/mimiciii_query_results
-      - ${LOCAL_DB}:/var/lib/postgresql/data
+      - postgres_mimiciii_data:/var/lib/postgresql/data
     ports:
       - 5555:5432
     init: true
     stdin_open: true
     tty: true
 
+volumes:
+  postgres_mimiciii_data:
+
+  # Below code not needed when using Docker named volume
   # Use this service to ensure local user has access to mapped db
   # See https://stackoverflow.com/a/75099809 for details
-  postgres_permissions:
-    image: duanegoodner/postgres_mimiciii
-    user: root
-    volumes:
-      - ${LOCAL_DB}:/var/lib/postgresql/data
-    entrypoint:
-      [
-        "/bin/bash",
-        "/docker-entrypoint-initdb.d/postgres_data_permissions/main.sh"
-      ]
-    depends_on:
-      - mimiciii_db
+  # postgres_permissions:
+  #   image: duanegoodner/postgres_mimiciii
+  #   user: root
+  #   volumes:
+  #     - ${LOCAL_DB}:/var/lib/postgresql/data
+  #   entrypoint:
+  #     [
+  #       "/bin/bash",
+  #       "/docker-entrypoint-initdb.d/postgres_data_permissions/main.sh"
+  #     ]
+  #   depends_on:
+  #     - mimiciii_db
