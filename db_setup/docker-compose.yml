@@ -1,11 +1,11 @@
 version: '3.8'
 
 services:
-  postgres_mimiciii:
+  initialize_postgres_mimiciii:
     image: postgres_mimiciii
     build:
       context: ../
-      dockerfile: ./docker/Dockerfile
+      dockerfile: ./db_setup/Dockerfile
       args:
         - PRIMARY_USER=gen_user
         - LOCAL_MIMICIII_BUILD_TOOLS=./mimic-code-fork/mimic-iii/buildmimic
@@ -15,7 +15,7 @@ services:
       - BUILD_MIMIC=1
       - POSTGRES_PASSWORD=postgres
       - PGDATA=/var/lib/postgresql/data
-    container_name: postgres_mimiciii
+    container_name: postgres_mimiciii_initialize
     volumes:
       - ${MIMICIII_CSV_DIR}:/mimic_data
       - postgres_mimiciii_data:/var/lib/postgresql/data
