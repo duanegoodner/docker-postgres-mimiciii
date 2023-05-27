@@ -20,7 +20,7 @@ services:
       - ${MIMICIII_CSV_DIR}:/mimic_data
       - postgres_mimiciii_data:/var/lib/postgresql/data
     ports:
-      - 5555:5432
+      - ${LOCAL_DB_PORT}:5432
     init: true
     stdin_open: true
     tty: true
