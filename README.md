@@ -1,12 +1,8 @@
 # docker_postgres_mimiciii
 
-This repository contains:
+This repository contains a `docker-compose.yml` and other Docker-related files for integrating PostgreSQL MIMIC-III Clinical Database build scripts from the  [MIT-LCP / mimic-code repository](https://github.com/MIT-LCP/mimic-code) into a multi-container Docker application. A Docker image built using this his `docker-compose.yml` file will also contain a sudo-privileged, non-root user with a custom `zsh` profile (to make the dev environment more pleasant if we need to `exec` into the container).
 
-* Docker-related files for integrating PostgreSQL MIMIC-III Clinical Database build scripts from the  [MIT-LCP / mimic-code repository](https://github.com/MIT-LCP/mimic-code) into a multi-container Docker application.
 
-* Dockerfile and supporting shell scripts that build a PostgreSQL MIMIC-III image containing a sudo-privileged, non-root user with a custom `zsh` profile (to make the dev environment more pleasant if we need to `exec` into the container).
-
-  
 
 ## Getting Started
 
