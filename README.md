@@ -196,7 +196,11 @@ And get the following output, confirming that we have a 50 GB volume:
 50G	/var/lib/docker/volumes/postgres_mimiciii_db/_data
 ```
 
+Now that we've finished our tests, stop the container with:
 
+```
+$ docker compose down
+```
 
 
 
