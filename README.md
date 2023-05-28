@@ -110,7 +110,97 @@ The name of our freshly created database is `mimic`, and the schema we are inter
 
 Once the database if fully built, use Ctrl+C to stop the container.
 
-### 6. Use the database...
+
+
+### 6. Confirm that the database and non-root sudo user were both created in the Docker image:
+
+From the `docker_postgres_mimiciii/postgres/` directory:
+
+Start a container instance of our Docker image in the background
+
+```
+$ docker compose up -d
+```
+
+`docker exec` into the container as the non-root sudo user:
+
+```
+$ docker docker exec -it --user gen_user postgres_mimiciii_setup /bin/zsh
+```
+
+This should take you to `gen_user`'s `zsh` prompt inside the container. From there run the following:
+
+```
+> psql -U postgres -d mimic -c "\dn"
+```
+
+The output should be:
+
+```
+       List of schemas
+   Name   |       Owner       
+----------+-------------------
+ mimiciii | postgres
+ public   | pg_database_owner
+(2 rows)
+```
+
+Then exit the container to return to your local shell prompt, and run `docker volume ls` to confirm that the named volume where we intended to save the PostgreSQL database indeed exests:
+
+```
+> exit
+$ docker volume ls
+```
+
+Among the output, you should see a line that says:
+
+```
+local     postgres_mimiciii_db
+```
+
+Check the metadata for this named volume:
+
+```
+$ docker volume inspect postgres_mimiciii_db
+```
+
+The output should look something like this:
+
+```
+[
+    {
+        "CreatedAt": "2023-05-27T23:16:02-06:00",
+        "Driver": "local",
+        "Labels": {
+            "com.docker.compose.project": "postgres",
+            "com.docker.compose.version": "2.17.3",
+            "com.docker.compose.volume": "mimiciii_db"
+        },
+        "Mountpoint": "/var/lib/docker/volumes/postgres_mimiciii_db/_data",
+        "Name": "postgres_mimiciii_db",
+        "Options": null,
+        "Scope": "local"
+    }
+]
+```
+
+To confirm that the size of the volume is what we expect for the MIMIC-III database, use `sudo du -sh <path value of the "Mountpoint" key>`. For example, with the mountpoint path shown above, we run:
+
+```
+sudo du -sh /var/lib/docker/volumes/postgres_mimiciii_db/_data
+```
+
+And get the following output, confirming that we have a 50 GB volume:
+
+```
+50G	/var/lib/docker/volumes/postgres_mimiciii_db/_data
+```
+
+
+
+
+
+### 7. Use the database...
 
 #### Option 1: As a standalone service:
 
@@ -162,25 +252,19 @@ volumes:
 
 
 
-### 7. Accessing a shell inside the container
+### 8. Accessing a shell inside the container
 
-The `postgres_mimiciii` Docker image has sudo-privileged user named `gen_user` . When troubleshooting / exploring a container, it may be useful to run a shell as this user inside the container. You can start a bash shell under this user in a running `postgres_mimiciii` container with the command:
-
-```
-$ docker exec -it --user gen_user postgres_mimiciii /bin/bash
-```
-
-Or, you can start a zsh shell with:
+The `postgres_mimiciii` Docker image has sudo-privileged user named `gen_user` . When troubleshooting / exploring a container, it may be useful to run a shell as this user inside the container. You can start a `zsh` shell under this user in a running `postgres_mimiciii` container with the command:
 
 ```
 docker exec -it --user gen_user postgres_mimiciii /bin/zsh
 ```
 
-I strongly recommend the second (zsh) option. `gen_user`'s zsh profile uses Oh-My-Zsh with Powerlevel10k formatting that just happens to match what I use in my local dev environment :grinning:.
 
 
 
-### 8. Removing the database
+
+### 9. Removing the database
 
  You can delete the named volume where Docker stores the database using:
 
