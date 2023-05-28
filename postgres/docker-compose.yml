@@ -1,32 +1,32 @@
 version: '3.8'
 
 services:
-  initialize_postgres_mimiciii:
+  postgres_mimiciii_setup:
     image: postgres_mimiciii
     build:
       context: ../
-      dockerfile: ./db_setup/Dockerfile
+      dockerfile: ./postgres/Dockerfile
       args:
         - PRIMARY_USER=gen_user
         - LOCAL_MIMICIII_BUILD_TOOLS=./vendor/mimic-code/mimic-iii/buildmimic
         - POSTGRES_ENTRYPOINT=/docker-entrypoint-initdb.d
     environment:
-      - MIMIC_PASSWORD=mimic
+      - MIMIC_PASSWORD=${MIMIC_PASSWORD}
       - BUILD_MIMIC=1
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - PGDATA=/var/lib/postgresql/data
-    container_name: postgres_mimiciii_initialize
+    container_name: postgres_mimiciii_setup
     volumes:
-      - ${MIMICIII_CSV_DIR}:/mimic_data
-      - postgres_mimiciii_data:/var/lib/postgresql/data
+      - ${MIMICIII_RAW_DIR}:/mimic_data
+      - mimiciii_db:/var/lib/postgresql/data
     ports:
-      - 5555:5432
+      - ${LOCAL_DB_PORT}:5432
     init: true
     stdin_open: true
     tty: true
 
 volumes:
-  postgres_mimiciii_data:
+  mimiciii_db:
 
   # Below code NOT needed when using Docker named volume
 

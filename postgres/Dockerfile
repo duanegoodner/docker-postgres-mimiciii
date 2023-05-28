@@ -2,7 +2,7 @@ FROM postgres:latest
 
 ARG PRIMARY_USER
 ARG PRIMARY_USER_HOME=/home/${PRIMARY_USER}
-ARG COMPONENTS=./db_setup/components
+ARG COMPONENTS=./postgres/components
 
 
 # specifically for mimiciii
@@ -26,7 +26,7 @@ ARG BUILD_DIR=${PRIMARY_USER_HOME}/docker_build
 WORKDIR ${BUILD_DIR}
 
 COPY ${COMPONENTS}/install_apt_pkgs ${BUILD_DIR}/install_apt_pkgs
-COPY ./db_setup/pkglist ${BUILD_DIR}/pkglist
+COPY ./postgres/pkglist ${BUILD_DIR}/pkglist
 RUN ${BUILD_DIR}/install_apt_pkgs/main.sh ${BUILD_DIR}/pkglist \
     && sudo rm -rf ${BUILD_DIR}/*
 
@@ -46,7 +46,7 @@ COPY ${LOCAL_MIMICIII_BUILD_TOOLS}/docker \
 COPY ${LOCAL_MIMICIII_BUILD_TOOLS}/postgres \
   ${POSTGRES_ENTRYPOINT}/buildmimic/postgres
 
-COPY ./db_setup/entrypoints/postgres_data_permissions \
+COPY ./postgres/entrypoints/postgres_data_permissions \
   ${POSTGRES_ENTRYPOINT}/postgres_data_permissions/
 
-ENV LOCAL_DB_OWNER=${PRIMARY_USER}
+# ENV LOCAL_DB_OWNER=${PRIMARY_USER}

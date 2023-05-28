@@ -74,4 +74,8 @@ echo "$0: running postgres_checks.sql (all rows should return PASSED)"
 psql "dbname=mimic user='$POSTGRES_USER' options=--search_path=mimiciii" < /docker-entrypoint-initdb.d/buildmimic/postgres/postgres_checks.sql
 fi
 
+# ensure mimic user can read mimiciii db
+psql -U postgres -d mimic -c "GRANT USAGE ON SCHEMA mimiciii TO mimic;"
+psql -U postgres -d mimic -c "GRANT SELECT ON ALL TABLES IN SCHEMA mimiciii TO mimic;"
+
 echo 'Done!'
