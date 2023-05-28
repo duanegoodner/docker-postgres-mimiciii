@@ -112,7 +112,7 @@ Once the database if fully built, use Ctrl+C to stop the container.
 
 
 
-### 6. Confirm that the database and non-root sudo user were both created in the Docker image:
+### 6. Run tests to confirm image, database, and Docker volume were created properly:
 
 From the `docker_postgres_mimiciii/postgres/` directory:
 
