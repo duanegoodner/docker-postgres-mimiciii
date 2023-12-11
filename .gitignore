@@ -1,7 +1,7 @@
 
 .idea/
 
-data/mimiciii_raw/*
+postgres/data/*
 !data/mimiciii_postgres/.gitkeep
 
 postgres/.env
