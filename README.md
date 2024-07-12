@@ -280,7 +280,7 @@ docker exec -it --user gen_user postgres_mimiciii /bin/zsh
 
 > [!NOTE]
 >
-> Deleting the database will free up 50 GB of disk space. Re-building from the 6 GB raw `.csv.gz` files (downloaded in Step 2) takes ~20 &#150;  40 minutes on a typical system. If you are done using the database for now, but may want to use it again later, removing the database (i.e. deleting the docker named volume) but keeping the raw `.csv.gz` files is a reasonable trade-off.
+> Deleting the database will free up 50 GB of disk space. Re-building from the 6 GB raw `.csv.gz` files (downloaded in Step 2) takes ~20 - 40 minutes on a typical system. If you are done using the database for now, but may want to use it again later, removing the database (i.e. deleting the docker named volume) but keeping the raw `.csv.gz` files is a reasonable trade-off.
 
 To delete the named volume where Docker stores the database, you first need to stop the container (if it's running):
 
