@@ -6,7 +6,7 @@ services:
       dockerfile: ./postgres/Dockerfile
       args:
         - PRIMARY_USER=gen_user
-        - LOCAL_MIMICIII_BUILD_TOOLS=./vendor/mimic-code/mimic-iii/buildmimic
+        - LOCAL_MIMICIII_BUILD_TOOLS=./vendor/mimic-code/a8308706d8f2bf3bbf42f5e7065094c648f64576/mimic-iii/buildmimic
         - POSTGRES_ENTRYPOINT=/docker-entrypoint-initdb.d
     environment:
       - MIMIC_PASSWORD=${MIMIC_PASSWORD}
