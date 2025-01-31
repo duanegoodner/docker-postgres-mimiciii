@@ -130,16 +130,10 @@ Start a container instance of our Docker image in the background
 docker compose up -d
 ```
 
-`docker exec` into the container as the non-root sudo user:
+Then try to run a command inside the container:
 
 ```
-docker exec -it --user gen_user postgres_mimiciii_setup /bin/zsh
-```
-
-This should take you to `gen_user`'s `zsh` prompt inside the container. From there run the following:
-
-```
-psql -U postgres -d mimic -c "\dn"
+docker compose exec postgres_mimiciii_setup psql -U postgres -d mimic -c "\dn"
 ```
 
 The output should be:
@@ -153,13 +147,13 @@ The output should be:
 (2 rows)
 ```
 
-Then exit the container to return to your local shell prompt:
+We can now stop the container with:
 
 ```
-exit
+docker compose down
 ```
 
-Next, run `docker volume ls` to confirm that the named volume where we intended to save the PostgreSQL database indeed exests:
+Next, run `docker volume ls` to confirm that the named volume where we intended to save the PostgreSQL database indeed exists:
 
 ```
 docker volume ls
@@ -208,13 +202,6 @@ And get the following output, confirming that we have a 50 GB volume:
 ```
 50G	/var/lib/docker/volumes/postgres_mimiciii_db/_data
 ```
-
-Now that we've finished our tests, stop the container with:
-
-```
-docker compose down
-```
-
 
 
 ### 7. Use the database...
