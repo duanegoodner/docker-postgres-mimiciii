@@ -70,7 +70,7 @@ From the `docker_postgres_mimiciii/postgres/` directory, run:
 docker compose up
 ```
 
-This will cause a container named `postgres_mimiciii` to run in your terminal foreground and display output as it initializes an instance of PostgreSQL. The first time the container runs, it will automatically build the MIMIC-III database in "named" Docker volume `postgres_mimiciii_db`.  (Docker generates this name by concatenating the  `postgres` directory name, and volume name `mimiciii_db` in `docker_postgres_mimiciii/postgres/docker-compose.yml`)  The database build process will likely take 45 to 60 minutes. Various output will display on the terminal during the build. You will know the database build has completed successfully when you see the following output:
+This will cause a container named `postgres_mimiciii` to run in your terminal foreground and display output as it initializes an instance of PostgreSQL. The first time the container runs, it will automatically build the MIMIC-III database in "named" Docker volume `postgres_mimiciii_db`.  (Docker generates this name by concatenating the  `postgres` directory name, and volume name `mimiciii_db` in `docker_postgres_mimiciii/postgres/docker-compose.yml`)  On a 13th Gen Intel i7 desktop CPU, the build takes ~30 minutes. Various output will display on the terminal during the build. You will know the database build has completed successfully when you see the following output:
 
 ```
 postgres_mimiciii_setup  |         tbl         | expected_count | observed_count | row_count_check 
