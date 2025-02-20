@@ -1,4 +1,4 @@
-# docker_postgres_mimiciii
+# docker-postgres-mimiciii
 
 This repository contains a `docker-compose.yml` and other Docker-related files for integrating PostgreSQL [MIMIC-III Clinical Database](https://physionet.org/content/mimiciii/1.4/) build scripts from the  [MIT-LCP / mimic-code repository](https://github.com/MIT-LCP/mimic-code) into a multi-container Docker application. A Docker image built using this his `docker-compose.yml` file will also contain a sudo-privileged, non-root user with a custom `zsh` profile (to make the dev environment more pleasant if we need to `exec` into the container).
 
@@ -6,44 +6,57 @@ This repository contains a `docker-compose.yml` and other Docker-related files f
 
 ## Getting Started
 
-### 1. Clone this repository to the machine where you will run the database.
-
-```
-git clone https://github.com/duanegoodner/docker_postgres_mimiciii
-```
-
-
-
-### 2. Obtain MIMIC-III raw data
+### 1. Obtain access to the MIMIC-III raw data
 
 * A Physionet account with "credentialed" status is required to download the database files. You can go [here](https://physionet.org/) to create an account and find instructions or obtaining "credentialed" access [here](https://mimic.mit.edu/docs/gettingstarted/) and [here](https://physionet.org/settings/credentialing/).
 
-* After obtaining credentialed access, `cd` into directory `docker_postgres_mimiciii/postgres`, and run the following command . (Replace `physionet_username`  with your actual username). 
+> [!IMPORTANT]  
+> Physionet policy prevents re-distributing MIMIC-III. Users must obtain data through their own approved Physionet account.
+
+
+### 2. Clone this repository to the machine where you will run the database.
+
+```
+git clone https://github.com/duanegoodner/docker-postgres-mimiciii
+```
+
+### 3. Download MIMIC-III data to designated location repo
+
+Run the following commands to download the 26 `.csv.gz` files that constitute the raw data for the entire MIMIC-III database to the correct location inside your local `docker-postgres-mimiciii` repo.
 
   ```
-  wget -r -N -c -np -P data --user physionet_username --ask-password https://physionet.org/files/mimiciii/1.4/
+  cd docker-postgre-mimiciii/postgres
+  wget -r -N -c -np -P data --user <physionet-username> --ask-password https://physionet.org/files/mimiciii/1.4/
+  # replace <physionet-username> with your actual user name on Physionet
   ```
-
-* The previous command will download  the 26 `.csv.gz` files that constitute the raw data for the entire MIMIC-III database  into `docker_postgres_mimiciii/postgres/data/physionet.org/files/mimiciii/1.4/` .
-
 > **Note** As of December, 2023, the download speed from physionet.org maxes out at ~ 1 MB/s, so it takes a minimum of ~60 minutes download the net file size of 6.2 GB. More information on the MIMIC-III database files can be found [here](https://physionet.org/).
 
-### 3. Add a `.env` file
+When downloading is complete, the files should be loacated at:
+```
+`./docker-postres-mimic-iii/postgres/data/physionet.org/files/mimiciii/1.4/`
+```
 
-Create file `docker_postgres_mimiciii/postgres/.env` and set values for the following environment variables 
+### 3. Create and populate data in `.env` file
+
+Create file `docker-postgres-mimiciii/postgres/.env` and paste the following content into it: 
 
 ```
 MIMIC_PASSWORD=
 POSTGRES_PASSWORD=
-MIMICIII_RAW_DIR=
-LOCAL_DB_PORT=
+MIMICIII_RAW_DIR=./data/physionet.org/files/mimiciii/1.4
+LOCAL_DB_PORT=5555
 ```
 
- `MIMIC_PASSWORD` is for a database user named `mimic` with read-only access to the MIMIC-III database, and `POSTGRES_PASSWORD` is for a database superuser with username `postgres`.  `MIMICIII_RAW_DIR` is the directory containing the `.csv.gz` files downloaded in Step 2. Here is an example of a set of valid values:
+Then, assign values to `MIMIC_PASSWORD` and `POSTGRES_PASSWORD` in the .env file.
+- `MIMIC_PASSWORD` will be the password for a database user named `mimic` with read-only access to the MIMIC-III database
+- `POSTGRES_PASSWORD` will be the password for a database superuser with username `postgres`.
+- `MIMICIII_RAW_DIR` is the directory containing the `.csv.gz` files downloaded in Step 2.
+
+Here is an example of the final `.env` file with `MIMIC_PASSWORD=my_mimic_password` and `POSTGRES_PASSWORD=my_postgres_password`:
 
 ```
-MIMIC_PASSWORD=mimic
-POSTGRES_PASSWORD=postgres
+MIMIC_PASSWORD=my_mimic_password
+POSTGRES_PASSWORD=my_postgres_password
 MIMICIII_RAW_DIR=./data/physionet.org/files/mimiciii/1.4
 LOCAL_DB_PORT=5555
 ```
@@ -52,7 +65,7 @@ LOCAL_DB_PORT=5555
 
 ### 4. Build the Docker image
 
-From the `docker_postgres_mimiciii/postgres/` directory, run the following command to build a Docker image named `postgres_mimiciii`.
+From the `docker-postgres-mimiciii/postgres/` directory, run the following command to build a Docker image named `postgres_mimiciii`.
 
 ```
 docker compose build
@@ -64,13 +77,13 @@ docker compose build
 
 > **Warning** The total size of the database built in this step is 50 GB.
 
-From the `docker_postgres_mimiciii/postgres/` directory, run:
+From the `docker-postgres-mimiciii/postgres/` directory, run:
 
 ```
 docker compose up
 ```
 
-This will cause a container named `postgres_mimiciii` to run in your terminal foreground and display output as it initializes an instance of PostgreSQL. The first time the container runs, it will automatically build the MIMIC-III database in "named" Docker volume `postgres_mimiciii_db`.  (Docker generates this name by concatenating the  `postgres` directory name, and volume name `mimiciii_db` in `docker_postgres_mimiciii/postgres/docker-compose.yml`)  On a 13th Gen Intel i7 desktop CPU, the build takes ~30 minutes. Various output will display on the terminal during the build. You will know the database build has completed successfully when you see the following output:
+This will cause a container named `postgres_mimiciii` to run in your terminal foreground and display output as it initializes an instance of PostgreSQL. The first time the container runs, it will automatically build the MIMIC-III database in "named" Docker volume `postgres_mimiciii_db`.  (Docker generates this name by concatenating the  `postgres` directory name, and volume name `mimiciii_db` in `docker-postgres-mimiciii/postgres/docker-compose.yml`)  On a 13th Gen Intel i7 desktop CPU, the build takes ~30 minutes. Various output will display on the terminal during the build. You will know the database build has completed successfully when you see the following output:
 
 ```
 postgres_mimiciii_setup  |         tbl         | expected_count | observed_count | row_count_check 
@@ -122,7 +135,7 @@ Once the database is fully built, and has successfully restarted use `Ctrl+C` to
 
 ### 6. Run tests to confirm image, database, and Docker volume were created properly:
 
-From the `docker_postgres_mimiciii/postgres/` directory:
+From the `docker-postgres-mimiciii/postgres/` directory:
 
 Start a container instance of our Docker image in the background
 
@@ -208,7 +221,7 @@ And get the following output, confirming that we have a 50 GB volume:
 
 #### Option 1: As a standalone service:
 
-From the `docker_postgres_mimiciii/postgres/` directory, run:
+From the `docker-postgres-mimiciii/postgres/` directory, run:
 
 ```1
 docker compose up
