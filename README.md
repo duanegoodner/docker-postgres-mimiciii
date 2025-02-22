@@ -29,7 +29,9 @@ Run the following commands to download the 26 `.csv.gz` files that constitute th
   wget -r -N -c -np -P data --user <physionet-username> --ask-password https://physionet.org/files/mimiciii/1.4/
   # replace <physionet-username> with your actual user name on Physionet
   ```
-> **Note** As of December, 2023, the download speed from physionet.org maxes out at ~ 1 MB/s, so it takes a minimum of ~60 minutes download the net file size of 6.2 GB. More information on the MIMIC-III database files can be found [here](https://physionet.org/).
+> [!NOTE]
+> As of December, 2023, the max download speed from physionet.org is &le;
+ 1 MB/s, so downloading the net 6.2 GB file size takes &gt; 60 minutes. More information on the MIMIC-III database files can be found [here](https://physionet.org/).
 
 When downloading is complete, the files should be loacated at:
 ```
@@ -61,7 +63,8 @@ MIMICIII_RAW_DIR=./data/physionet.org/files/mimiciii/1.4
 LOCAL_DB_PORT=5555
 ```
 
-> **Note** Replace `my_mimic_password_replace_me` and `my_postgres_password_replace_me` with strong passwords.
+> [!IMPORTANT]
+> Replace `my_mimic_password_replace_me` and `my_postgres_password_replace_me` with strong passwords.
 
 
 
@@ -281,8 +284,7 @@ docker exec -it --user gen_user postgres_mimiciii /bin/zsh
 ### 9. Removing the database
 
 > [!NOTE]
->
-> Deleting the database will free up 50 GB of disk space. Re-building from the 6 GB raw `.csv.gz` files (downloaded in Step 2) takes ~20 - 40 minutes on a typical system. If you are done using the database for now, but may want to use it again later, removing the database (i.e. deleting the docker named volume) but keeping the raw `.csv.gz` files is a reasonable trade-off.
+> Deleting the database will free up 50 GB of disk space. Re-building from the 6 GB raw `.csv.gz` files (downloaded in Step 2) takes 20 &mdash; 40 minutes on a typical system.
 
 To delete the named volume where Docker stores the database, you first need to stop the container (if it's running):
 
