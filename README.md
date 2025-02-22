@@ -50,16 +50,18 @@ LOCAL_DB_PORT=5555
 Then, assign values to `MIMIC_PASSWORD` and `POSTGRES_PASSWORD` in the .env file.
 - `MIMIC_PASSWORD` will be the password for a database user named `mimic` with read-only access to the MIMIC-III database
 - `POSTGRES_PASSWORD` will be the password for a database superuser with username `postgres`.
-- `MIMICIII_RAW_DIR` is the directory containing the `.csv.gz` files downloaded in Step 2.
 
-Here is an example of the final `.env` file with `MIMIC_PASSWORD=my_mimic_password` and `POSTGRES_PASSWORD=my_postgres_password`:
+
+Here is an example of the final `.env` file with `MIMIC_PASSWORD=my_mimic_password_replace_me` and `POSTGRES_PASSWORD=my_postgres_password_replace_me`:
 
 ```
-MIMIC_PASSWORD=my_mimic_password
-POSTGRES_PASSWORD=my_postgres_password
+MIMIC_PASSWORD=my_mimic_password_replace_me
+POSTGRES_PASSWORD=my_postgres_password_replace_me
 MIMICIII_RAW_DIR=./data/physionet.org/files/mimiciii/1.4
 LOCAL_DB_PORT=5555
 ```
+
+> **Note** Replace `my_mimic_password_replace_me` and `my_postgres_password_replace_me` with strong passwords.
 
 
 
